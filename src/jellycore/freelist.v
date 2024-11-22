@@ -11,8 +11,8 @@ module freelist(
         input wire [1:0]    comnum,
         input wire [`PHY_REG_SEL-1:0]   released_tag1,
         input wire [`PHY_REG_SEL-1:0]   released_tag2,
-        input wire                      released_tag1_val,
-        input wire                      released_tag2_val,
+        input wire                      released_tag1_valid,
+        input wire                      released_tag2_valid,
         input wire          stall_DP,   // if back-end stalls
         output reg [`PHY_REG_SEL-1:0]   phy_dst1,
         output reg [`PHY_REG_SEL-1:0]   phy_dst2,
@@ -75,8 +75,8 @@ module freelist(
             freenum <= freenum + comnum - {1'b0, phy_dst1_valid} - {1'b0, phy_dst2_valid};
             free_bits <= (free_bits
                          // Add released tags
-                         | ({`PHY_REG_NUM{released_tag1_val}} & (1'b1 << released_tag1))
-                         | ({`PHY_REG_NUM{released_tag2_val}} & (1'b1 << released_tag2))
+                         | ({`PHY_REG_NUM{released_tag1_valid}} & (1'b1 << released_tag1))
+                         | ({`PHY_REG_NUM{released_tag2_valid}} & (1'b1 << released_tag2))
                          // Remove newly allocated tags
                          & ~({`PHY_REG_NUM{phy_dst1_valid}} & (1'b1 << phy_dst1))
                          & ~({`PHY_REG_NUM{phy_dst2_valid}} & (1'b1 << phy_dst2)));
